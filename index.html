@@ -27,6 +27,8 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            /* 确保 body 至少占满全屏，方便监听空白处点击 */
+            min-height: 100vh;
         }
 
         .container {
@@ -35,7 +37,6 @@
             padding: 40px 0;
         }
 
-        /* --- 网格布局 --- */
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -45,7 +46,6 @@
             margin: 0 auto;
         }
 
-        /* --- 卡片：核心优化居中样式 --- */
         .card {
             background: #ffffff;
             border-radius: 4px;
@@ -53,21 +53,34 @@
             box-shadow: var(--card-shadow);
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             border: 1px solid rgba(0, 0, 0, 0.03);
-
-            /* 关键优化：Flex居中布局 */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
+            cursor: pointer;
         }
 
-        .card:hover {
+        @media (min-width: 769px) {
+            .card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(127, 172, 141, 0.12);
+            }
+
+            .card:hover .shop-name::after {
+                width: 48px;
+            }
+        }
+
+        .card.is-active {
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(127, 172, 141, 0.12);
         }
 
-        /* 标签居中与间距 */
+        .card.is-active .shop-name::after {
+            width: 48px;
+        }
+
         .platform-tag {
             font-size: 16px;
             color: var(--primary-green);
@@ -76,9 +89,10 @@
             border-radius: 20px;
             margin-bottom: 20px;
             letter-spacing: 1px;
+            pointer-events: none;
+            /* 防止点击标签影响判定 */
         }
 
-        /* 图片居中 */
         .card img {
             width: 100%;
             max-width: 180px;
@@ -87,15 +101,17 @@
             border: 1px solid #f8f8f8;
             padding: 8px;
             background: #fff;
+            pointer-events: none;
+            /* 防止点击图片影响判定 */
         }
 
-        /* 店名居中与装饰 */
         .shop-name {
             font-size: 20px;
             font-weight: 600;
             color: var(--text-main);
             margin-bottom: 8px;
             letter-spacing: 1px;
+            pointer-events: none;
         }
 
         .shop-name::after {
@@ -105,12 +121,7 @@
             height: 1px;
             background: var(--soft-gold);
             margin: 10px auto;
-            /* 保证装饰线也居中 */
             transition: width 0.3s;
-        }
-
-        .card:hover .shop-name::after {
-            width: 48px;
         }
 
         .scan-tips {
@@ -118,11 +129,11 @@
             color: var(--text-light);
             margin-top: 5px;
             letter-spacing: 1px;
+            pointer-events: none;
         }
 
         .footer-action {
             margin: 80px auto 40px;
-            /* 增加顶部间距，与内容区拉开距离 */
             text-align: center;
             position: relative;
             max-width: 600px;
@@ -130,11 +141,8 @@
 
         .btn-ref {
             font-size: 20px;
-            /* 适当减小字号，通过间距和装饰来显眼 */
             color: var(--soft-gold);
-            /* 使用辅助金色，更醒目且协调 */
             letter-spacing: 8px;
-            /* 极大的字间距，营造高级感 */
             text-transform: uppercase;
             font-weight: 400;
             display: flex;
@@ -143,7 +151,6 @@
             opacity: 0.8;
         }
 
-        /* 左右两侧的装饰线 */
         .btn-ref::before,
         .btn-ref::after {
             content: "";
@@ -157,7 +164,6 @@
             --direction: left;
         }
 
-        /* --- 手机端适配 --- */
         @media (max-width: 768px) {
             .grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -189,7 +195,7 @@
     </style>
 </head>
 
-<body>
+<body onclick="handleGlobalClick(event)">
 
     <div class="container">
         <div class="grid">
@@ -240,6 +246,33 @@
             <p class="btn-ref">仅供参考</p>
         </div>
     </div>
+
+    <script>
+        function handleGlobalClick(event) {
+            // 找到点击路径中最近的 .card 元素
+            const card = event.target.closest('.card');
+
+            // 情况1：点击的是卡片
+            if (card) {
+                const isActive = card.classList.contains('is-active');
+
+                // 先清除所有卡片的激活状态
+                document.querySelectorAll('.card').forEach(c => c.classList.remove('is-active'));
+
+                // 如果刚才点击的卡片之前没激活，现在激活它
+                if (!isActive) {
+                    card.classList.add('is-active');
+                }
+
+                // 阻止事件冒泡到 body 的其他逻辑
+                event.stopPropagation();
+            }
+            // 情况2：点击的是空白区域（非卡片区域）
+            else {
+                document.querySelectorAll('.card').forEach(c => c.classList.remove('is-active'));
+            }
+        }
+    </script>
 
 </body>
 
