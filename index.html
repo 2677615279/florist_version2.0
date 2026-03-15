@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower Collection</title>
+    <style>
+        :root {
+            --primary-green: #7fac8d;
+            --soft-gold: #c5a373;
+            --bg-cream: #fbf9f5;
+            --text-main: #333333;
+            --text-light: #888888;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'STSong', '華康明體', 'PingFang SC', serif;
+            background-color: var(--bg-cream);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        /* --- 网格布局 --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 60px;
+            row-gap: 50px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* --- 卡片：核心优化居中样式 --- */
+        .card {
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 30px 20px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+
+            /* 关键优化：Flex居中布局 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(127, 172, 141, 0.12);
+        }
+
+        /* 标签居中与间距 */
+        .platform-tag {
+            font-size: 16px;
+            color: var(--primary-green);
+            background: rgba(127, 172, 141, 0.08);
+            padding: 3px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* 图片居中 */
+        .card img {
+            width: 100%;
+            max-width: 180px;
+            aspect-ratio: 1 / 1;
+            margin-bottom: 25px;
+            border: 1px solid #f8f8f8;
+            padding: 8px;
+            background: #fff;
+        }
+
+        /* 店名居中与装饰 */
+        .shop-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .shop-name::after {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 1px;
+            background: var(--soft-gold);
+            margin: 10px auto;
+            /* 保证装饰线也居中 */
+            transition: width 0.3s;
+        }
+
+        .card:hover .shop-name::after {
+            width: 48px;
+        }
+
+        .scan-tips {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        .footer-action {
+            margin: 80px auto 40px;
+            /* 增加顶部间距，与内容区拉开距离 */
+            text-align: center;
+            position: relative;
+            max-width: 600px;
+        }
+
+        .btn-ref {
+            font-size: 20px;
+            /* 适当减小字号，通过间距和装饰来显眼 */
+            color: var(--soft-gold);
+            /* 使用辅助金色，更醒目且协调 */
+            letter-spacing: 8px;
+            /* 极大的字间距，营造高级感 */
+            text-transform: uppercase;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+        }
+
+        /* 左右两侧的装饰线 */
+        .btn-ref::before,
+        .btn-ref::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to var(--direction, right), transparent, var(--soft-gold));
+            margin: 0 20px;
+        }
+
+        .btn-ref::after {
+            --direction: left;
+        }
+
+        /* --- 手机端适配 --- */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+                column-gap: 15px;
+                row-gap: 20px;
+            }
+
+            .shop-name {
+                font-size: 20px;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            .card {
+                padding: 20px 10px;
+            }
+
+            .footer-action {
+                margin: 40px auto 20px;
+            }
+
+            .btn-ref {
+                font-size: 20px;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <div class="platform-tag">支付宝小程序</div>
+                <img src="./alipay_scan_zfb_huibahuayi.png" alt="支付宝">
+                <span class="shop-name">卉霸花艺</span>
+                <span class="scan-tips">支付宝扫一扫</span>
+            </div>
+
+            <div class="card">
+                <div class="platform-tag">美团闪购</div>
+                <img src="./wechat_scan_meituan_huayuxianhuadian.png" alt="美团">
+                <span class="shop-name">花屿鲜花店</span>
+                <span class="scan-tips">微信扫一扫</span>
+            </div>
+
+            <div class="card">
+                <div class="platform-tag">淘宝闪购</div>
+                <img src="./taobao_scan_taobao_relianxianhuadian.png" alt="淘宝">
+                <span class="shop-name">热恋鲜花店</span>
+                <span class="scan-tips">淘宝扫一扫</span>
+            </div>
+
+            <div class="card">
+                <div class="platform-tag">美团闪购</div>
+                <img src="./wechat_scan_meituan_yuexihuayi.png" alt="美团">
+                <span class="shop-name">悦禧花艺</span>
+                <span class="scan-tips">微信扫一扫</span>
+            </div>
+
+            <div class="card">
+                <div class="platform-tag">淘宝闪购</div>
+                <img src="./taobao_scan_taobao_moshangxianhuafang.png" alt="淘宝">
+                <span class="shop-name">陌上鲜花坊</span>
+                <span class="scan-tips">淘宝扫一扫</span>
+            </div>
+
+            <div class="card">
+                <div class="platform-tag">美团闪购</div>
+                <img src="./wechat_scan_meituan_yanhuihuayi.png" alt="美团">
+                <span class="shop-name">颜汇花艺</span>
+                <span class="scan-tips">微信扫一扫</span>
+            </div>
+        </div>
+
+        <div class="footer-action">
+            <p class="btn-ref">仅供参考</p>
+        </div>
+    </div>
+
+</body>
+
+</html>
