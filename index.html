@@ -152,7 +152,7 @@
         }
         .btn-ref::after { --direction: left; }
 
-        /* --- 优化后的浮动按钮 --- */
+        /* --- 浮动按钮 --- */
         #scroll-toggle {
             position: fixed;
             right: 25px;
@@ -172,7 +172,6 @@
             opacity: 0.9;
         }
 
-        /* 仅在电脑端鼠标滑过时变褐色 */
         @media (hover: hover) {
             #scroll-toggle:hover {
                 transform: scale(1.1);
@@ -180,7 +179,6 @@
             }
         }
 
-        /* 手机端点击时瞬间变褐色，松开立即恢复 */
         #scroll-toggle:active {
             transform: scale(0.9);
             background-color: var(--soft-gold);
@@ -190,7 +188,7 @@
             width: 20px;
             height: 20px;
             transition: transform 0.5s ease;
-            pointer-events: none; /* 防止细线拦截点击 */
+            pointer-events: none;
         }
 
         .rotate-up { transform: rotate(180deg); }
@@ -275,6 +273,10 @@
         // 处理滚动跳转
         function handleScrollToggle(event) {
             event.stopPropagation();
+            
+            // --- 核心修改：点击箭头跳转时，先收回所有卡片 ---
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('is-active'));
+            
             const scrolledToBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50;
             if (scrolledToBottom) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
