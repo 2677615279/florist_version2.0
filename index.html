@@ -28,7 +28,7 @@
             padding: 0;
             line-height: 1.6;
             min-height: 100vh;
-            scroll-behavior: smooth; /* 让滚动变平滑的关键 */
+            scroll-behavior: smooth;
         }
 
         .container {
@@ -46,6 +46,7 @@
             margin: 0 auto;
         }
 
+        /* --- 卡片样式 --- */
         .card {
             background: #ffffff;
             border-radius: 4px;
@@ -151,7 +152,7 @@
         }
         .btn-ref::after { --direction: left; }
 
-        /* --- 新增：浮动按钮样式 --- */
+        /* --- 优化后的浮动按钮 --- */
         #scroll-toggle {
             position: fixed;
             right: 25px;
@@ -171,19 +172,27 @@
             opacity: 0.9;
         }
 
-        #scroll-toggle:hover {
-            transform: scale(1.1);
+        /* 仅在电脑端鼠标滑过时变褐色 */
+        @media (hover: hover) {
+            #scroll-toggle:hover {
+                transform: scale(1.1);
+                background-color: var(--soft-gold);
+            }
+        }
+
+        /* 手机端点击时瞬间变褐色，松开立即恢复 */
+        #scroll-toggle:active {
+            transform: scale(0.9);
             background-color: var(--soft-gold);
         }
 
-        /* 箭头符号的旋转动画 */
         #scroll-toggle svg {
             width: 20px;
             height: 20px;
             transition: transform 0.5s ease;
+            pointer-events: none; /* 防止细线拦截点击 */
         }
 
-        /* 当处于页面底部时添加此旋转类 */
         .rotate-up { transform: rotate(180deg); }
 
         @media (max-width: 768px) {
@@ -197,7 +206,7 @@
 
 <body onclick="handleGlobalClick(event)">
 
-    <div class="container" id="top">
+    <div class="container">
         <div class="grid">
             <div class="card">
                 <div class="platform-tag">支付宝小程序</div>
@@ -237,7 +246,7 @@
             </div>
         </div>
 
-        <div class="footer-action" id="bottom">
+        <div class="footer-action">
             <p class="btn-ref">仅供参考</p>
         </div>
     </div>
@@ -250,7 +259,7 @@
     </div>
 
     <script>
-        // 1. 原有的全局点击处理（卡片弹起逻辑）
+        // 处理卡片弹起逻辑及空白收回
         function handleGlobalClick(event) {
             const card = event.target.closest('.card');
             if (card) {
@@ -263,27 +272,21 @@
             }
         }
 
-        // 2. 新增：浮动按钮的跳转逻辑
+        // 处理滚动跳转
         function handleScrollToggle(event) {
-            event.stopPropagation(); // 防止触发全局点击
-            
-            // 判断当前滚动位置
+            event.stopPropagation();
             const scrolledToBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50;
-
             if (scrolledToBottom) {
-                // 如果在底部，回到顶部
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                // 如果在上面，去到底部
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             }
         }
 
-        // 3. 监听滚动，实时切换箭头方向
+        // 监听滚动切换箭头方向
         window.addEventListener('scroll', () => {
             const icon = document.getElementById('arrow-icon');
             const isBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 80;
-            
             if (isBottom) {
                 icon.classList.add('rotate-up');
             } else {
