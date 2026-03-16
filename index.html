@@ -27,8 +27,8 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            /* 确保 body 至少占满全屏，方便监听空白处点击 */
             min-height: 100vh;
+            scroll-behavior: smooth; /* 让滚动变平滑的关键 */
         }
 
         .container {
@@ -66,10 +66,7 @@
                 transform: translateY(-8px);
                 box-shadow: 0 20px 40px rgba(127, 172, 141, 0.12);
             }
-
-            .card:hover .shop-name::after {
-                width: 48px;
-            }
+            .card:hover .shop-name::after { width: 48px; }
         }
 
         .card.is-active {
@@ -77,9 +74,7 @@
             box-shadow: 0 20px 40px rgba(127, 172, 141, 0.12);
         }
 
-        .card.is-active .shop-name::after {
-            width: 48px;
-        }
+        .card.is-active .shop-name::after { width: 48px; }
 
         .platform-tag {
             font-size: 16px;
@@ -90,7 +85,6 @@
             margin-bottom: 20px;
             letter-spacing: 1px;
             pointer-events: none;
-            /* 防止点击标签影响判定 */
         }
 
         .card img {
@@ -102,7 +96,6 @@
             padding: 8px;
             background: #fff;
             pointer-events: none;
-            /* 防止点击图片影响判定 */
         }
 
         .shop-name {
@@ -151,53 +144,60 @@
             opacity: 0.8;
         }
 
-        .btn-ref::before,
-        .btn-ref::after {
-            content: "";
-            flex: 1;
-            height: 1px;
+        .btn-ref::before, .btn-ref::after {
+            content: ""; flex: 1; height: 1px;
             background: linear-gradient(to var(--direction, right), transparent, var(--soft-gold));
             margin: 0 20px;
         }
+        .btn-ref::after { --direction: left; }
 
-        .btn-ref::after {
-            --direction: left;
+        /* --- 新增：浮动按钮样式 --- */
+        #scroll-toggle {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            width: 45px;
+            height: 45px;
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(127, 172, 141, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            opacity: 0.9;
         }
 
+        #scroll-toggle:hover {
+            transform: scale(1.1);
+            background-color: var(--soft-gold);
+        }
+
+        /* 箭头符号的旋转动画 */
+        #scroll-toggle svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.5s ease;
+        }
+
+        /* 当处于页面底部时添加此旋转类 */
+        .rotate-up { transform: rotate(180deg); }
+
         @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-                column-gap: 15px;
-                row-gap: 20px;
-            }
-
-            .shop-name {
-                font-size: 20px;
-            }
-
-            .container {
-                width: 95%;
-            }
-
-            .card {
-                padding: 20px 10px;
-            }
-
-            .footer-action {
-                margin: 40px auto 20px;
-            }
-
-            .btn-ref {
-                font-size: 20px;
-                letter-spacing: 4px;
-            }
+            .grid { grid-template-columns: repeat(2, 1fr); column-gap: 15px; row-gap: 20px; }
+            .container { width: 95%; }
+            .card { padding: 20px 10px; }
+            #scroll-toggle { right: 15px; bottom: 15px; width: 40px; height: 40px; }
         }
     </style>
 </head>
 
 <body onclick="handleGlobalClick(event)">
 
-    <div class="container">
+    <div class="container" id="top">
         <div class="grid">
             <div class="card">
                 <div class="platform-tag">支付宝小程序</div>
@@ -205,35 +205,30 @@
                 <span class="shop-name">卉霸花艺</span>
                 <span class="scan-tips">支付宝扫一扫</span>
             </div>
-
             <div class="card">
                 <div class="platform-tag">美团闪购</div>
                 <img src="./wechat_scan_meituan_huayuxianhuadian.png" alt="美团">
                 <span class="shop-name">花屿鲜花店</span>
                 <span class="scan-tips">微信扫一扫</span>
             </div>
-
             <div class="card">
                 <div class="platform-tag">淘宝闪购</div>
                 <img src="./taobao_scan_taobao_relianxianhuadian.png" alt="淘宝">
                 <span class="shop-name">热恋鲜花店</span>
                 <span class="scan-tips">淘宝扫一扫</span>
             </div>
-
             <div class="card">
                 <div class="platform-tag">美团闪购</div>
                 <img src="./wechat_scan_meituan_yuexihuayi.png" alt="美团">
                 <span class="shop-name">悦禧花艺</span>
                 <span class="scan-tips">微信扫一扫</span>
             </div>
-
             <div class="card">
                 <div class="platform-tag">淘宝闪购</div>
                 <img src="./taobao_scan_taobao_moshangxianhuafang.png" alt="淘宝">
                 <span class="shop-name">陌上鲜花坊</span>
                 <span class="scan-tips">淘宝扫一扫</span>
             </div>
-
             <div class="card">
                 <div class="platform-tag">美团闪购</div>
                 <img src="./wechat_scan_meituan_yanhuihuayi.png" alt="美团">
@@ -242,36 +237,59 @@
             </div>
         </div>
 
-        <div class="footer-action">
+        <div class="footer-action" id="bottom">
             <p class="btn-ref">仅供参考</p>
         </div>
     </div>
 
-    <script>
-        function handleGlobalClick(event) {
-            // 找到点击路径中最近的 .card 元素
-            const card = event.target.closest('.card');
+    <div id="scroll-toggle" onclick="handleScrollToggle(event)">
+        <svg id="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+    </div>
 
-            // 情况1：点击的是卡片
+    <script>
+        // 1. 原有的全局点击处理（卡片弹起逻辑）
+        function handleGlobalClick(event) {
+            const card = event.target.closest('.card');
             if (card) {
                 const isActive = card.classList.contains('is-active');
-
-                // 先清除所有卡片的激活状态
                 document.querySelectorAll('.card').forEach(c => c.classList.remove('is-active'));
-
-                // 如果刚才点击的卡片之前没激活，现在激活它
-                if (!isActive) {
-                    card.classList.add('is-active');
-                }
-
-                // 阻止事件冒泡到 body 的其他逻辑
+                if (!isActive) card.classList.add('is-active');
                 event.stopPropagation();
-            }
-            // 情况2：点击的是空白区域（非卡片区域）
-            else {
+            } else {
                 document.querySelectorAll('.card').forEach(c => c.classList.remove('is-active'));
             }
         }
+
+        // 2. 新增：浮动按钮的跳转逻辑
+        function handleScrollToggle(event) {
+            event.stopPropagation(); // 防止触发全局点击
+            
+            // 判断当前滚动位置
+            const scrolledToBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50;
+
+            if (scrolledToBottom) {
+                // 如果在底部，回到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // 如果在上面，去到底部
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        }
+
+        // 3. 监听滚动，实时切换箭头方向
+        window.addEventListener('scroll', () => {
+            const icon = document.getElementById('arrow-icon');
+            const isBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 80;
+            
+            if (isBottom) {
+                icon.classList.add('rotate-up');
+            } else {
+                icon.classList.remove('rotate-up');
+            }
+        });
     </script>
 
 </body>
